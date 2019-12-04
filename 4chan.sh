@@ -1,22 +1,22 @@
-echo 'Link?'
+l=$1;
 
-read l;
- 
-b=$(echo $l | cut  -d/ -f4);
-t=$(echo $l | cut  -d/ -f6);
 
-if [ ! -d "/4chan/$b-$t" ]; then
+b=$(echo $l | sed  's/.*org\/\(.*\)\/thread.*/\1/');
+t=$(echo $l | awk -F "/" '{print $NF}');
 
-mkdir -p ./4chan/$b-$t;
-cd ./4chan/$b-$t;
+
+if [ ! -d "/4chan/$t-$b" ]; then
+
+mkdir -p ./4chan/$t-$b;
+cd ./4chan/$t-$b;
 
 else
 
-cd ./4chan/$b-$t;
+cd ./4chan/$t-$b;
 
 fi
 
-for n in $(curl -sb -H  http://a.4cdn.org/${b}/thread/${t}.json | sed 's/filename/\n/g' | grep -o '.jpg.*md5\|.png.*md5\|.gif.*md5\|.webm.*md5' | sed 's/\".*\"tim\"//g;s/\,\".*//g' | sed -E 's/(.*):(.*)/\2\1/' | sed "s|^|https://is2.4chan.org/${b}/|g") ;
+for n in $(curl -s  -Sb -H $l |sed 's/_blank/\n/g' | grep -o 'File: <a href=".*target' | sed 's/File.*="/https:/g;s/".*//g') ; 
 
 do wget -nc  $n ; 
 
