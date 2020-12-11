@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+
+pid=`pgrep -f "$1"`
+
+for s in $pid; do
+for i in /tmp/mpvSockets/$s ; do echo '{"command":["keypress", "'$2'" ]}' | socat - $i; done
+done
